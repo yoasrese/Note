@@ -1,0 +1,52 @@
+Nmap
+  nmap -sV -A -p 80,443,3306,8080,8081 192.168.56.0/24
+  nmap -sV -p- 192.168.56.20
+  nmap -Pn 192.168.56.0/24 FW-blocking-ping
+  nmap --script vuln 192.168.44.32
+  nmap --script auth,vuln 10.10.55.20
+curl
+  curl -I http://192.168.56.20
+whatweb
+  whatweb http://192.168.56.20
+nikto
+  nikto -h http://192.168.56.20
+Use nc or telnet to confirm
+  nc 192.168.56.20 25
+  nc 192.168.56.20 110
+  nc 192.168.56.20 143
+smbclient
+  smbclient -L //192.168.0.15 -N
+xfreerdp
+  xfreerdp /u:Jones /p:sunshine /v:10.10.55.25
+hydra
+  hydra -l Henry -P /usr/share/wordlists/rockyou.txt smb://192.168.0.15
+  hydra -l Jones -P /usr/share/wordlists/rockyou.txt rdp://10.10.55.25
+crackmapexec
+  crackmapexec smb 192.168.0.15 -u Henry -p /usr/share/wordlists/rockyou.txt
+get
+  get Sniff.txt
+cat
+  cat Sniff.txt
+file
+  file hide.cfe
+7z
+  7z x hide.cfe
+mv
+  mv hide.cfe hide.zip
+unzip
+  unzip hide.zip
+OpenSSL
+  openssl enc -aes-256-cbc -d -in hide.cfe -out image.jpg -k sunshine
+  openssl enc -aes-256-cbc -d -a -in restricted.txt -k password
+Binwalk
+  binwalk hide.cfe
+  binwalk -e secret.jpg
+Calculate
+  Calculate CRC32
+crc32
+  crc32 image.jpg
+find
+  find / -iname "*pass*" 2>/dev/null
+type 
+
+
