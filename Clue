@@ -1,0 +1,38 @@
+.Domain Controller (DC)
+Port	Service
+53	DNS
+88	Kerberos
+135	RPC
+139	NetBIOS
+389	LDAP
+445	SMB
+464	Kerberos password
+636	LDAPS
+3268	Global Catalog
+.WampServer
+Port 80 or 8080
+Apache on Windows
+PHP
+MySQL
+HTTP titles
+3306
+.Mercury services/mail-related services
+SMTP
+POP3
+IMAP
+Finger
+Mercury-specific services
+25/tcp   open  smtp     Mercury/32 smtpd
+79/tcp   open  finger   Mercury/32 fingerd
+110/tcp  open  pop3     Mercury/32 pop3d
+143/tcp  open  imap     Mercury/32 imap4d
+106	POPPASSD
+2222	Sometimes admin/testing
+.Identify Mobile Device Services
+5555 → Android ADB
+22 → SSH
+80/8080 → Web admin panels
+62078 → iOS lockdown
+
+
+
